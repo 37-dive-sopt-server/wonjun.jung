@@ -3,6 +3,7 @@ package org.sopt;
 import org.sopt.controller.MemberController;
 import org.sopt.domain.Member;
 import org.sopt.domain.Sex;
+import org.sopt.repository.FileMemberRepository;
 import org.sopt.repository.MemoryMemberRepository;
 import org.sopt.service.MemberServiceImpl;
 
@@ -15,9 +16,10 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        MemoryMemberRepository memberRepository = new MemoryMemberRepository();
-        MemberServiceImpl memberService = new MemberServiceImpl();
-        MemberController memberController = new MemberController();
+        // MemoryMemberRepository memberRepository = new MemoryMemberRepository();
+        FileMemberRepository memberRepository = new FileMemberRepository();
+        MemberServiceImpl memberService = new MemberServiceImpl(memberRepository);
+        MemberController memberController = new MemberController(memberService);
 
         Scanner scanner = new Scanner(System.in);
 
@@ -129,8 +131,10 @@ public class Main {
                             if (deletedId != null) {
                                 System.out.println("✅ 회원 삭제 완료 (ID: " + deletedId + ")");
                             } else {
-                                System.out.println("❌ 회원 등록 실패");
+                                System.out.println("❌ 회원 삭제 실패");
                             }
+                        } else {
+                            System.out.println("⚠️ 존재하지 않는 회원입니다.");
                         }
                     } catch (NumberFormatException e) {
                         System.out.println("❌ 유효하지 않은 ID 형식입니다. 숫자를 입력해주세요.");

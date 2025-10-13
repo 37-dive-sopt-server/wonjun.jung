@@ -2,7 +2,7 @@ package org.sopt.controller;
 
 import org.sopt.domain.Member;
 import org.sopt.domain.Sex;
-import org.sopt.service.MemberServiceImpl;
+import org.sopt.service.MemberService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,7 +10,11 @@ import java.util.Optional;
 
 public class MemberController {
 
-    private final MemberServiceImpl memberService = new MemberServiceImpl();
+    private final MemberService memberService;
+
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
 
     public Long createMember(String name, LocalDate birthDate, String email, Sex sex) {
         return memberService.join(name, birthDate, email, sex);

@@ -15,9 +15,9 @@ public interface MemberService {
 
     public List<Member> findAllMembers();
 
-    private void validateDuplicateEmail(String email) {
-
-    }
+    private void validateDuplicateEmail(String email) {}
 
     public Long delete(Long memberId);
+
+    private void validateAdult() {}
 }

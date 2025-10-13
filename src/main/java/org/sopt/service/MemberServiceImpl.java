@@ -2,23 +2,31 @@ package org.sopt.service;
 
 import org.sopt.domain.Member;
 import org.sopt.domain.Sex;
+import org.sopt.repository.FileMemberRepository;
+import org.sopt.repository.MemberRepository;
 import org.sopt.repository.MemoryMemberRepository;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
 public class MemberServiceImpl implements MemberService {
 
-    private final MemoryMemberRepository memberRepository = new MemoryMemberRepository();
-    private static long sequence = 1L;
+    // private final MemoryMemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
-    public Long join(String name, LocalDate birthday, String email, Sex sex) {
+    public MemberServiceImpl(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
+
+    public Long join(String name, LocalDate birthDate, String email, Sex sex) {
+        validateAdult(birthDate);
         validateDuplicateEmail(email);
 
-        Member member = new Member(sequence++, name, birthday, email, sex);
-        memberRepository.save(member);
-        return member.getId();
+        Member member = new Member(null, name, birthDate, email, sex);
+        Member savedMember = memberRepository.save(member);
+        return savedMember.getId();
     }
 
     public Optional<Member> findOne(Long memberId) {
@@ -38,5 +46,12 @@ public class MemberServiceImpl implements MemberService {
 
     public Long delete(Long memberId) {
         return memberRepository.delete(memberId);
+    }
+
+    private void validateAdult(LocalDate birthDate) {
+        int age = Period.between(birthDate, LocalDate.now()).getYears() + 1;
+        if (age < 20) {
+            throw new IllegalStateException("⚠️ 20세 미만의 회원은 가입할 수 없습니다.");
+        }
     }
 }
