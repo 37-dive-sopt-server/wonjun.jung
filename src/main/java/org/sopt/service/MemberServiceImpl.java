@@ -2,9 +2,9 @@ package org.sopt.service;
 
 import org.sopt.domain.Member;
 import org.sopt.domain.Sex;
-import org.sopt.repository.FileMemberRepository;
+import org.sopt.exception.DuplicateEmailException;
+import org.sopt.exception.UnderageException;
 import org.sopt.repository.MemberRepository;
-import org.sopt.repository.MemoryMemberRepository;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -40,7 +40,7 @@ public class MemberServiceImpl implements MemberService {
     private void validateDuplicateEmail(String email) {
         memberRepository.findByEmail(email)
             .ifPresent(member -> {
-                throw new IllegalStateException("⚠️ 이미 존재하는 이메일입니다.");
+                throw new DuplicateEmailException(email);
             });
     }
 
@@ -51,7 +51,12 @@ public class MemberServiceImpl implements MemberService {
     private void validateAdult(LocalDate birthDate) {
         int age = Period.between(birthDate, LocalDate.now()).getYears() + 1;
         if (age < 20) {
-            throw new IllegalStateException("⚠️ 20세 미만의 회원은 가입할 수 없습니다.");
+            throw new UnderageException(age);
         }
+    }
+
+    @Override
+    public void checkEmailDuplicate(String email) {
+        validateDuplicateEmail(email);
     }
 }

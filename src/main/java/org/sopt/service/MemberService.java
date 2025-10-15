@@ -9,15 +9,18 @@ import java.util.Optional;
 
 public interface MemberService {
 
-    public Long join(String name, LocalDate birthday, String email, Sex sex);
+    Long join(String name, LocalDate birthday, String email, Sex sex);
 
-    public Optional<Member> findOne(Long memberId);
+    Optional<Member> findOne(Long memberId);
 
-    public List<Member> findAllMembers();
+    List<Member> findAllMembers();
 
-    private void validateDuplicateEmail(String email) {}
+    Long delete(Long memberId);
 
-    public Long delete(Long memberId);
-
-    private void validateAdult() {}
+    /**
+     * 이메일 중복 검증 (실시간 검증용)
+     * @param email 검증할 이메일
+     * @throws org.sopt.exception.DuplicateEmailException 이메일이 중복된 경우
+     */
+    void checkEmailDuplicate(String email);
 }

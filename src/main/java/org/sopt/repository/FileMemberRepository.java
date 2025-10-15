@@ -1,6 +1,7 @@
 package org.sopt.repository;
 
 import org.sopt.domain.Member;
+import org.sopt.exception.MemberNotFoundException;
 
 import java.io.*;
 import java.util.*;
@@ -47,7 +48,12 @@ public class FileMemberRepository implements MemberRepository {
 
     @Override
     public Long delete(Long id) {
-        return store.remove(id).getId();
+        Member member = store.get(id);
+        if (member == null) {
+            throw new MemberNotFoundException(id);
+        }
+        store.remove(id);
+        return member.getId();
     }
 
     private void saveDataToFile() {
