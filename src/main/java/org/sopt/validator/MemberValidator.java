@@ -8,7 +8,7 @@ import java.time.format.DateTimeParseException;
 
 public class MemberValidator {
     
-    // null 검증
+    // 이름 검증
     public static void validateName(String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new InvalidNameException();
@@ -25,9 +25,8 @@ public class MemberValidator {
             throw new InvalidEmailFormatException();
         }
     }
-
-
-    // 형식 검증
+    
+    // 날짜 검증
     public static LocalDate validateAndConvertDate(String dateString) {
         try {
             return LocalDate.parse(dateString);

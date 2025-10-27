@@ -2,6 +2,7 @@ package org.sopt.service;
 
 import org.sopt.domain.Member;
 import org.sopt.domain.Sex;
+import org.sopt.dto.response.MemberResponse;
 import org.sopt.exception.DuplicateEmailException;
 import org.sopt.exception.UnderageException;
 import org.sopt.repository.MemberRepository;
@@ -23,18 +24,35 @@ public class MemberServiceImpl implements MemberService {
     public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
-
-    public Long join(String name, LocalDate birthDate, String email, Sex sex) {
+    
+    // 회원 추가
+    public MemberResponse join(String name, LocalDate birthDate, String email, Sex sex) {
         validateAdult(birthDate);
         validateDuplicateEmail(email);
 
         Member member = new Member(null, name, birthDate, email, sex);
-        Member savedMember = memberRepository.save(member);
-        return savedMember.getId();
+        memberRepository.save(member);
+
+        return new MemberResponse(
+                member.getId(),
+                member.getName(),
+                member.getBirthDate(),
+                member.getEmail(),
+                member.getSex()
+        );
     }
 
     public Optional<Member> findOne(Long memberId) {
-        return memberRepository.findById(memberId);
+
+        Member member = memberRepository.findById(memberId);
+
+        return new MemberResponse(
+                member.getId(),
+                member.getName(),
+                member.getBirthDate(),
+                member.getEmail(),
+                member.getSex()
+        );
     }
 
     public List<Member> findAllMembers() {

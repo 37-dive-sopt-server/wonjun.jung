@@ -28,8 +28,8 @@ public class MemberController {
     public ResponseEntity<MemberResponse> createMember(@RequestBody MemberCreateRequest req) {
         MemberValidator.validateName(req.name());
         MemberValidator.validateEmail(req.email());
-        MemberValidator.
-        memberService.join(req.name(), req.birthDate(), req.email(), req.sex())
+        MemberResponse res = memberService.join(req.name(), req.birthDate(), req.email(), req.sex());
+        return ResponseEntity.ok(res);
     }
     
     // 회원 조회

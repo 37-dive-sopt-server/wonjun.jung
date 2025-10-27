@@ -2,6 +2,7 @@ package org.sopt.service;
 
 import org.sopt.domain.Member;
 import org.sopt.domain.Sex;
+import org.sopt.dto.response.MemberResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.Optional;
 
 public interface MemberService {
 
-    Long join(String name, LocalDate birthday, String email, Sex sex);
+    MemberResponse join(String name, LocalDate birthday, String email, Sex sex);
 
     Optional<Member> findOne(Long memberId);
 
