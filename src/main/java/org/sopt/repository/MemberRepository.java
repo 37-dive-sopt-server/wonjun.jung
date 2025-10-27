@@ -16,4 +16,6 @@ public interface MemberRepository {
     public Optional<Member> findByEmail(String email);
 
     public Long delete(Long id);
+
+    public Member update(Member member);
 }

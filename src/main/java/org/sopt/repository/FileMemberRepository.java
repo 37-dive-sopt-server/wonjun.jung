@@ -1,13 +1,14 @@
 package org.sopt.repository;
 
+import org.sopt.common.ErrorCode;
 import org.sopt.domain.Member;
-import org.sopt.exception.MemberNotFoundException;
+import org.sopt.exception.BusinessException;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.util.*;
 
-@Repository
+@Repository("fileMemberRepository")
 public class FileMemberRepository implements MemberRepository {
 
     private Map<Long, Member> store;
@@ -21,7 +22,8 @@ public class FileMemberRepository implements MemberRepository {
             System.out.println("데이터를 파일에 저장하고 프로그램을 종료합니다.");
         }));
     }
-
+    
+    // 회원 추가
     @Override
     public Member save(Member member) {
         if (member.getId() == null || member.getId() == 0L) {
@@ -30,12 +32,14 @@ public class FileMemberRepository implements MemberRepository {
         store.put(member.getId(), member);
         return member;
     }
-
+    
+    // 회원 조회
     @Override
     public Optional<Member> findById(Long id) {
         return Optional.ofNullable(store.get(id));
     }
-
+    
+    // 전체 회원 조회
     @Override
     public List<Member> findAll() {
         return new ArrayList<>(store.values());
@@ -52,10 +56,19 @@ public class FileMemberRepository implements MemberRepository {
     public Long delete(Long id) {
         Member member = store.get(id);
         if (member == null) {
-            throw new MemberNotFoundException(id);
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
         store.remove(id);
         return member.getId();
+    }
+
+    @Override
+    public Member update(Member member) {
+        if (!store.containsKey(member.getId())) {
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+        store.put(member.getId(), member);
+        return member;
     }
 
     private void saveDataToFile() {

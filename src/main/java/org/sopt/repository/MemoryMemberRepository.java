@@ -1,10 +1,13 @@
 package org.sopt.repository;
 
+import org.sopt.common.ErrorCode;
 import org.sopt.domain.Member;
-import org.sopt.exception.MemberNotFoundException;
+import org.sopt.exception.BusinessException;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
+@Repository("memoryMemberRepository")
 public class MemoryMemberRepository implements MemberRepository {
 
     private static final Map<Long, Member> store = new HashMap<>();
@@ -40,9 +43,18 @@ public class MemoryMemberRepository implements MemberRepository {
     public Long delete(Long id) {
         Member member = store.get(id);
         if (member == null) {
-            throw new MemberNotFoundException(id);
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
         store.remove(id);
         return member.getId();
+    }
+
+    @Override
+    public Member update(Member member) {
+        if (!store.containsKey(member.getId())) {
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+        store.put(member.getId(), member);
+        return member;
     }
 }

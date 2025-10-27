@@ -7,7 +7,7 @@ import org.sopt.domain.Sex;
 
 import java.time.LocalDate;
 
-public record MemberCreateRequest(
+public record MemberUpdateRequest(
         @NotBlank(message = "이름을 입력해주세요")
         String name,
 

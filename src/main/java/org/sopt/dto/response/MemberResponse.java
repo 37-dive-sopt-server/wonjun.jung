@@ -1,6 +1,6 @@
 package org.sopt.dto.response;
 
-import jakarta.validation.constraints.Email;
+import org.sopt.domain.Member;
 import org.sopt.domain.Sex;
 
 import java.time.LocalDate;
@@ -12,4 +12,14 @@ public record MemberResponse(
         String email,
         Sex sex
 ) {
+    // 정적 팩토리 메서드
+    public static MemberResponse from(Member member) {
+        return new MemberResponse(
+                member.getId(),
+                member.getName(),
+                member.getBirthDate(),
+                member.getEmail(),
+                member.getSex()
+        );
+    }
 }
