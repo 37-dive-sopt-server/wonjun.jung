@@ -5,17 +5,21 @@ import org.sopt.domain.Sex;
 import org.sopt.exception.DuplicateEmailException;
 import org.sopt.exception.UnderageException;
 import org.sopt.repository.MemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class MemberServiceImpl implements MemberService {
 
     // private final MemoryMemberRepository memberRepository;
     private final MemberRepository memberRepository;
 
+    @Autowired
     public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }

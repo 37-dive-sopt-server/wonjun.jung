@@ -2,10 +2,12 @@ package org.sopt.repository;
 
 import org.sopt.domain.Member;
 import org.sopt.exception.MemberNotFoundException;
+import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.util.*;
 
+@Repository
 public class FileMemberRepository implements MemberRepository {
 
     private Map<Long, Member> store;
