@@ -14,13 +14,19 @@ public class MemberValidator {
             throw new InvalidNameException();
         }
     }
-
+    
+    // 이메일 형식 검증
     public static void validateEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
             throw new InvalidEmailException();
         }
+        String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        if (!email.matches(regex)) {
+            throw new InvalidEmailFormatException();
+        }
     }
-    
+
+
     // 형식 검증
     public static LocalDate validateAndConvertDate(String dateString) {
         try {

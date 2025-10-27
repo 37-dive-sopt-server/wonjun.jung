@@ -1,20 +1,19 @@
 package org.sopt.controller;
 
 import org.sopt.domain.Member;
-import org.sopt.domain.Sex;
+import org.sopt.dto.request.MemberCreateRequest;
+import org.sopt.dto.response.MemberResponse;
 import org.sopt.service.MemberService;
 import org.sopt.validator.MemberValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/users")
 public class MemberController {
 
     private final MemberService memberService;
@@ -23,32 +22,40 @@ public class MemberController {
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
-
-    @PostMapping("/users")
-    public Long createMember(@RequestParam String name, @RequestParam LocalDate birthDate, @RequestParam String email, @RequestParam Sex sex) {
-        MemberValidator.validateName(name);
-        MemberValidator.validateEmail(email);
-        return memberService.join(name, birthDate, email, sex);
+    
+    // 회원 추가
+    @PostMapping
+    public ResponseEntity<MemberResponse> createMember(@RequestBody MemberCreateRequest req) {
+        MemberValidator.validateName(req.name());
+        MemberValidator.validateEmail(req.email());
+        MemberValidator.
+        memberService.join(req.name(), req.birthDate(), req.email(), req.sex())
     }
-
-    @GetMapping("/users")
+    
+    // 회원 조회
+    @GetMapping
     public Optional<Member> findMemberById(@RequestParam Long id) {
         MemberValidator.validateId(id);
         return memberService.findOne(id);
     }
-
-    @GetMapping("/usersAll")
+    
+    // 전체 회원 조회
+    @GetMapping("/all")
     public List<Member> getAllMembers() {
         return memberService.findAllMembers();
     }
 
+    // 회원 삭제
+    @DeleteMapping
     public Long deleteMember(Long memberId) {
         MemberValidator.validateId(memberId);
         return memberService.delete(memberId);
     }
-
-    public void checkEmailDuplicate(String email) {
-        MemberValidator.validateEmail(email);
-        memberService.checkEmailDuplicate(email);
+    
+    // 회원 정보 업데이트
+    @PutMapping
+    public void updateMember() {
     }
+
+
 }
