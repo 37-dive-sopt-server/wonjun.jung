@@ -32,9 +32,9 @@ public class MemberServiceImpl implements MemberService {
         validateDuplicateEmail(email);
 
         Member member = Member.createNew(name, birthDate, email, sex);
-        memberRepository.save(member);
+        Member savedMember = memberRepository.save(member);
 
-        return MemberResponse.from(member);
+        return MemberResponse.from(savedMember);
     }
     
     // 회원 조회
