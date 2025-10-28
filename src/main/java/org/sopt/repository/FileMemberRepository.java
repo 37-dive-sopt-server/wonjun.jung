@@ -6,6 +6,8 @@ import org.sopt.exception.BusinessException;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 @Repository("fileMemberRepository")
@@ -44,16 +46,35 @@ public class FileMemberRepository extends MemoryMemberRepository {
     }
 
     private void saveDataToFile() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
+        File tempFile = new File(FILE_PATH + ".tmp");
+        File actualFile = new File(FILE_PATH);
+
+        // 임시 파일에 데이터 쓰기
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(tempFile))) {
             oos.writeObject(store);
-            System.out.println("데이터가 파일에 성공적으로 저장되었습니다: " + FILE_PATH);
+            System.out.println("데이터가 임시 파일에 성공적으로 저장되었습니다: " + tempFile.getName());
         } catch (FileNotFoundException e) {
-            System.err.println("파일 저장 실패: 파일 경로를 찾을 수 없습니다 - " + FILE_PATH);
+            System.err.println("임시 파일 저장 실패: 파일 경로를 찾을 수 없습니다 - " + tempFile.getPath());
             e.printStackTrace();
+            tempFile.delete();  // 실패 시 임시 파일 삭제
             throw new BusinessException(ErrorCode.INTERNAL_ERROR);
         } catch (IOException e) {
-            System.err.println("파일 저장 실패: IO 오류 발생 - " + e.getMessage());
+            System.err.println("임시 파일 저장 실패: IO 오류 발생 - " + e.getMessage());
             e.printStackTrace();
+            tempFile.delete();  // 실패 시 임시 파일 삭제
+            throw new BusinessException(ErrorCode.INTERNAL_ERROR);
+        }
+
+        // 임시 파일을 실제 파일로 이동
+        try {
+            Files.move(tempFile.toPath(), actualFile.toPath(),
+                    StandardCopyOption.ATOMIC_MOVE,
+                    StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("데이터가 파일에 성공적으로 저장되었습니다: " + FILE_PATH);
+        } catch (IOException e) {
+            System.err.println("파일 이동 실패: " + e.getMessage());
+            e.printStackTrace();
+            tempFile.delete();  // 실패 시 임시 파일 삭제
             throw new BusinessException(ErrorCode.INTERNAL_ERROR);
         }
     }
