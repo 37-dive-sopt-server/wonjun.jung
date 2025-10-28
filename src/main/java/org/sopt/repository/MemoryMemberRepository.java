@@ -16,7 +16,16 @@ public class MemoryMemberRepository implements MemberRepository {
     @Override
     public Member save(Member member) {
         if (member.getId() == null || member.getId() == 0L) {
-            member.setId(++sequence);
+            Long newId = ++sequence;
+            Member newMember = new Member(
+                    newId,
+                    member.getName(),
+                    member.getBirthDate(),
+                    member.getEmail(),
+                    member.getSex()
+            );
+            store.put(newId, newMember);
+            return newMember;
         }
         store.put(member.getId(), member);
         return member;
