@@ -10,8 +10,8 @@ import java.util.*;
 @Repository("memoryMemberRepository")
 public class MemoryMemberRepository implements MemberRepository {
 
-    private static final Map<Long, Member> store = new HashMap<>();
-    private long sequence = 0L;
+    protected Map<Long, Member> store = new HashMap<>();
+    protected long sequence = 0L;
 
     @Override
     public Member save(Member member) {

@@ -1,21 +1,18 @@
 package org.sopt.repository;
 
-import org.sopt.common.ErrorCode;
 import org.sopt.domain.Member;
-import org.sopt.exception.BusinessException;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.util.*;
 
 @Repository("fileMemberRepository")
-public class FileMemberRepository implements MemberRepository {
+public class FileMemberRepository extends MemoryMemberRepository {
 
-    private Map<Long, Member> store;
-    private long sequence = 0L;
     private static final String FILE_PATH = "members.dat";
 
     public FileMemberRepository() {
+        super();
         loadDataFromFile();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             saveDataToFile();
@@ -23,61 +20,25 @@ public class FileMemberRepository implements MemberRepository {
         }));
     }
     
-    // 회원 추가
     @Override
     public Member save(Member member) {
-        if (member.getId() == null || member.getId() == 0L) {
-            Long newId = ++sequence;
-            Member newMember = new Member(
-                    newId,
-                    member.getName(),
-                    member.getBirthDate(),
-                    member.getEmail(),
-                    member.getSex()
-            );
-            store.put(newId, newMember);
-            return newMember;
-        }
-        store.put(member.getId(), member);
-        return member;
-    }
-    
-    // 회원 조회
-    @Override
-    public Optional<Member> findById(Long id) {
-        return Optional.ofNullable(store.get(id));
-    }
-    
-    // 전체 회원 조회
-    @Override
-    public List<Member> findAll() {
-        return new ArrayList<>(store.values());
-    }
-
-    @Override
-    public Optional<Member> findByEmail(String email) {
-        return store.values().stream()
-                .filter(member -> member.getEmail().equalsIgnoreCase(email))
-                .findFirst();
+        Member savedMember = super.save(member);
+        saveDataToFile();
+        return savedMember;
     }
 
     @Override
     public Long delete(Long id) {
-        Member member = store.get(id);
-        if (member == null) {
-            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
-        }
-        store.remove(id);
-        return member.getId();
+        Long deletedId = super.delete(id);
+        saveDataToFile();
+        return deletedId;
     }
 
     @Override
     public Member update(Member member) {
-        if (!store.containsKey(member.getId())) {
-            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
-        }
-        store.put(member.getId(), member);
-        return member;
+        Member updatedMember = super.update(member);
+        saveDataToFile();
+        return updatedMember;
     }
 
     private void saveDataToFile() {
