@@ -17,7 +17,7 @@ public class MemoryMemberRepository implements MemberRepository {
     public Member save(Member member) {
         if (member.getId() == null || member.getId() == 0L) {
             Long newId = ++sequence;
-            Member newMember = new Member(
+            Member newMember = Member.of(
                     newId,
                     member.getName(),
                     member.getBirthDate(),
