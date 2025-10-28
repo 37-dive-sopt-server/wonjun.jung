@@ -5,11 +5,11 @@ import java.time.LocalDate;
 
 public class Member implements Serializable {
 
-    private Long id;
-    private String name;
-    private LocalDate birthDate;
-    private String email;
-    private Sex sex;
+    private final Long id;
+    private final String name;
+    private final LocalDate birthDate;
+    private final String email;
+    private final Sex sex;
 
     // private 생성자 (외부에서 직접 생성 방지)
     private Member(Long id, String name, LocalDate birthDate, String email, Sex sex) {
