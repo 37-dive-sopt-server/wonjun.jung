@@ -23,25 +23,25 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    // 회원 추가
+    // 회원 생성
     @PostMapping
     public ResponseEntity<ApiResponse<MemberResponse>> createMember(@Valid @RequestBody MemberCreateRequest req) {
         MemberResponse res = memberService.join(req.name(), req.birthDate(), req.email(), req.sex());
         return ResponseEntity.ok(ApiResponse.success(res));
     }
+
+    // 전체 회원 조회
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<MemberResponse>>> getAllMembers() {
+        List<MemberResponse> members = memberService.findAllMembers();
+        return ResponseEntity.ok(ApiResponse.success(members));
+    }
     
-    // 회원 조회
+    // 단일 회원 조회
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<MemberResponse>> findMemberById(@PathVariable Long id) {
         MemberResponse res = memberService.findOne(id);
         return ResponseEntity.ok(ApiResponse.success(res));
-    }
-
-    // 전체 회원 조회
-    @GetMapping("/all")
-    public ResponseEntity<ApiResponse<List<MemberResponse>>> getAllMembers() {
-        List<MemberResponse> members = memberService.findAllMembers();
-        return ResponseEntity.ok(ApiResponse.success(members));
     }
 
     // 회원 삭제
