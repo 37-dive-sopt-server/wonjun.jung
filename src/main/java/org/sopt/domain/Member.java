@@ -22,10 +22,10 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
-    @OneToMany(cascade=CascadeType.ALL)
+    @OneToMany(mappedBy="member", cascade=CascadeType.ALL)
     private List<Article> articles;
 
-    public Member() {}
+    protected Member() {}
 
     // private 생성자 (외부에서 직접 생성 방지)
     private Member(Long id, String name, LocalDate birthDate, String email, Sex sex) {
@@ -62,5 +62,9 @@ public class Member {
 
     public Sex getSex() {
         return sex;
+    }
+
+    public List<Article> getArticles() {
+        return articles;
     }
 }
