@@ -1,15 +1,31 @@
 package org.sopt.domain;
 
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
-public class Member implements Serializable {
+@Entity
+public class Member {
 
-    private final Long id;
-    private final String name;
-    private final LocalDate birthDate;
-    private final String email;
-    private final Sex sex;
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    private LocalDate birthDate;
+
+    private String email;
+
+    @Enumerated(EnumType.STRING)
+    private Sex sex;
+
+    @OneToMany(cascade=CascadeType.ALL)
+    private List<Article> articles;
+
+    public Member() {}
 
     // private 생성자 (외부에서 직접 생성 방지)
     private Member(Long id, String name, LocalDate birthDate, String email, Sex sex) {
