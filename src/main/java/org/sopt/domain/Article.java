@@ -22,17 +22,24 @@ public class Article {
 
     private String content;
 
+    private Tag tag;
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
     protected Article() {}
 
-    private Article(Member member, String title, String content) {
+    private Article(Member member, String title, String content, Tag tag) {
         this.member = member;
         this.title = title;
         this.content = content;
+        this.tag = tag;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public static Article of(Member member, String title, String content, Tag tag) {
+        return new Article(member, title, content, tag);
     }
 
     public Long getId() {
@@ -49,6 +56,10 @@ public class Article {
 
     public String getContent() {
         return content;
+    }
+
+    public Tag getTag() {
+        return tag;
     }
 
     public LocalDateTime getCreatedAt() {

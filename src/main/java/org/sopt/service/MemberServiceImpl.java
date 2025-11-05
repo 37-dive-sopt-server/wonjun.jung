@@ -29,7 +29,7 @@ public class MemberServiceImpl implements MemberService {
         validateAdult(birthDate);
         validateDuplicateEmail(email);
 
-        Member member = Member.createNew(name, birthDate, email, sex);
+        Member member = Member.of(name, birthDate, email, sex);
         Member savedMember = memberRepository.save(member);
 
         return MemberResponse.from(savedMember);
@@ -71,7 +71,6 @@ public class MemberServiceImpl implements MemberService {
         validateAdult(request.birthDate());
 
         Member updatedMember = Member.of(
-                memberId,
                 request.name(),
                 request.birthDate(),
                 request.email(),
