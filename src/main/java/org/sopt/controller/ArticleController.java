@@ -8,8 +8,10 @@ import org.sopt.service.ArticleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/articles")
+@RequestMapping("/api/v1/articles")
 public class ArticleController {
 
     private final ArticleService articleService;
@@ -29,6 +31,13 @@ public class ArticleController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ArticleResponse>> findOne(@PathVariable Long id) {
         ArticleResponse res = articleService.findById(id);
+        return ResponseEntity.ok(ApiResponse.success(res));
+    }
+
+    // 아티클 전체 조회
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<ArticleResponse>>> findAll() {
+        List<ArticleResponse> res = articleService.findAll();
         return ResponseEntity.ok(ApiResponse.success(res));
     }
 }

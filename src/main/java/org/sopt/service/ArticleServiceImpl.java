@@ -11,6 +11,9 @@ import org.sopt.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
@@ -42,5 +45,13 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ARTICLE_NOT_FOUND));
         return ArticleResponse.from(article);
+    }
+
+    // 아티클 전체 조회
+    @Transactional
+    public List<ArticleResponse> findAll() {
+        return articleRepository.findAll().stream()
+                .map(ArticleResponse::from)
+                .toList();
     }
 }

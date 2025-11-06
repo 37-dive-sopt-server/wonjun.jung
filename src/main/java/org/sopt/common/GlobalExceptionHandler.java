@@ -8,6 +8,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -49,12 +50,12 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error(400, errorMessage));
     }
 
-    // Content-Type 예외 처리 (Content-Type이 application/json이 아닌 경우)
-    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseEntity<ApiResponse<Void>> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
+    // API URL 예외 처리
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleNoResourceFound(NoResourceFoundException e) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(400, "Content-Type은 application/json이어야 합니다."));
+                .status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.error(404, "요청 URL이 올바르지 않습니다."));
     }
 
     // 일반 예외 처리
