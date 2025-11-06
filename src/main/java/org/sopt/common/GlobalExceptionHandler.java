@@ -3,6 +3,7 @@ package org.sopt.common;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.extern.slf4j.Slf4j;
 import org.sopt.exception.BusinessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -31,6 +32,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(errorCode.status())
                 .body(ApiResponse.error(errorCode));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+
+        String errorMessage = e.getMessage();
+
+        log.warn("[409][DataIntegrityViolation] {}", errorMessage);
+
+        if (errorMessage != null && errorMessage.contains("Duplicate entry") && errorMessage.contains("for key")) {
+            String clientMessage = "이미 존재하는 제목입니다. 다른 제목을 사용해 주세요.";
+
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(ApiResponse.error(HttpStatus.CONFLICT.value(), clientMessage));
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "데이터베이스 제약 조건 위반으로 요청을 처리할 수 없습니다."));
     }
 
     /* ===================== 검증/요청 형식 관련 400 ===================== */
