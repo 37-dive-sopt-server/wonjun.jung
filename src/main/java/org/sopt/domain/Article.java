@@ -7,6 +7,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(indexes = {
+        @Index(name = "idx_article_title", columnList = "title"),
+        @Index(name = "idx_article_member_id", columnList = "memberId")
+})
 @EntityListeners(AuditingEntityListener.class)
 public class Article {
 

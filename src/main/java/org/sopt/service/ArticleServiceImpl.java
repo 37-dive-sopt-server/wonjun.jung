@@ -39,25 +39,25 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     // 아티클 단일 조회
-    @Transactional
+    @Transactional(readOnly = true)
     public ArticleResponse findById(Long articleId) {
-        Article article = articleRepository.findById(articleId)
+        Article article = articleRepository.findByIdWithMember(articleId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ARTICLE_NOT_FOUND));
         return ArticleResponse.from(article);
     }
 
     // 아티클 전체 조회
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ArticleResponse> findAll() {
-        return articleRepository.findAll().stream()
+        return articleRepository.findAllWithMember().stream()
                 .map(ArticleResponse::from)
                 .toList();
     }
 
-    // 아티클 검색
+    // 아티클 검색 (동적 쿼리)
     @Transactional(readOnly = true)
     public List<ArticleResponse> search(String title, String memberName) {
-        return articleRepository.findByTitleContainingAndMember_NameContaining(title, memberName).stream()
+        return articleRepository.searchWithDynamicQuery(title, memberName).stream()
                 .map(ArticleResponse::from)
                 .toList();
     }
