@@ -13,4 +13,6 @@ public interface ArticleService {
 
     List<ArticleResponse> findAll();
 
+    List<ArticleResponse> search(String title, String memberName);
+
 }

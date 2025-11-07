@@ -11,7 +11,6 @@ import org.sopt.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -51,6 +50,14 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public List<ArticleResponse> findAll() {
         return articleRepository.findAll().stream()
+                .map(ArticleResponse::from)
+                .toList();
+    }
+
+    // 아티클 검색
+    @Transactional(readOnly = true)
+    public List<ArticleResponse> search(String title, String memberName) {
+        return articleRepository.findByTitleContainingAndMember_NameContaining(title, memberName).stream()
                 .map(ArticleResponse::from)
                 .toList();
     }

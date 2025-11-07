@@ -40,4 +40,14 @@ public class ArticleController {
         List<ArticleResponse> res = articleService.findAll();
         return ResponseEntity.ok(ApiResponse.success(res));
     }
+
+    // 아티클 검색 (제목 또는 회원 이름)
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<ArticleResponse>>> search(
+            @RequestParam(required = false, defaultValue = "") String title,
+            @RequestParam(required = false, defaultValue = "") String memberName
+    ) {
+        List<ArticleResponse> res = articleService.search(title, memberName);
+        return ResponseEntity.ok(ApiResponse.success(res));
+    }
 }
