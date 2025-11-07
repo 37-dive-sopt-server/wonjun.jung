@@ -22,6 +22,7 @@ public class Article {
     @JoinColumn(name = "memberId")
     private Member member;
 
+    @Column(unique = true)
     private String title;
 
     private String content;
