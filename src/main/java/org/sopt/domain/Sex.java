@@ -7,7 +7,8 @@ import java.util.Arrays;
 
 public enum Sex implements Serializable {
     MALE,
-    FEMALE;
+    FEMALE,
+    OTHER;
 
     @JsonCreator
     public static Sex from(String input) {

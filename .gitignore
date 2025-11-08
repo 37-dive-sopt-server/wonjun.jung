@@ -48,3 +48,6 @@ CLAUDE.md
 
 ### Data file ###
 *.dat
+
+### env ###
+.env

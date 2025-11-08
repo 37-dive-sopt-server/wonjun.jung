@@ -7,9 +7,8 @@ import org.sopt.dto.request.MemberUpdateRequest;
 import org.sopt.dto.response.MemberResponse;
 import org.sopt.exception.BusinessException;
 import org.sopt.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -20,24 +19,24 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
-    @Autowired
-    public MemberServiceImpl(@Qualifier("fileMemberRepository") MemberRepository memberRepository) {
-        // "fileMemberRepository" 또는 "memoryMemberRepository" 선택 가능
+    public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
     
     // 회원 추가
+    @Transactional
     public MemberResponse join(String name, LocalDate birthDate, String email, Sex sex) {
         validateAdult(birthDate);
         validateDuplicateEmail(email);
 
-        Member member = Member.createNew(name, birthDate, email, sex);
+        Member member = Member.of(name, birthDate, email, sex);
         Member savedMember = memberRepository.save(member);
 
         return MemberResponse.from(savedMember);
     }
     
     // 회원 조회
+    @Transactional(readOnly = true)
     public MemberResponse findOne(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
@@ -46,6 +45,7 @@ public class MemberServiceImpl implements MemberService {
     }
     
     // 전체 회원 조회
+    @Transactional(readOnly = true)
     public List<MemberResponse> findAllMembers() {
         return memberRepository.findAll().stream()
                 .map(MemberResponse::from)
@@ -53,12 +53,13 @@ public class MemberServiceImpl implements MemberService {
     }
     
     // 회원 삭제
-    public Long delete(Long memberId) {
-        return memberRepository.delete(memberId);
+    @Transactional
+    public void delete(Long memberId) {
+        memberRepository.deleteById(memberId);
     }
 
     // 회원 업데이트
-    @Override
+    @Transactional
     public MemberResponse update(Long memberId, MemberUpdateRequest request) {
         Member existingMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
@@ -70,15 +71,11 @@ public class MemberServiceImpl implements MemberService {
         validateAdult(request.birthDate());
 
         Member updatedMember = Member.of(
-                memberId,
                 request.name(),
                 request.birthDate(),
                 request.email(),
                 request.sex()
         );
-
-        memberRepository.update(updatedMember);
-
         return MemberResponse.from(updatedMember);
     }
     

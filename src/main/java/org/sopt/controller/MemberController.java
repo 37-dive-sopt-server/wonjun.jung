@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/api/v1/members")
 public class MemberController {
 
     private final MemberService memberService;
 
-    @Autowired
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
@@ -46,9 +45,9 @@ public class MemberController {
 
     // 회원 삭제
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<ApiResponse<Long>> deleteMember(@PathVariable Long memberId) {
-        Long deletedId = memberService.delete(memberId);
-        return ResponseEntity.ok(ApiResponse.success(deletedId));
+    public ResponseEntity<ApiResponse<Void>> deleteMember(@PathVariable Long memberId) {
+        memberService.delete(memberId);
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 
     // 회원정보 수정

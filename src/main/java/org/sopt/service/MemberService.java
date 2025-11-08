@@ -15,7 +15,7 @@ public interface MemberService {
 
     List<MemberResponse> findAllMembers();
 
-    Long delete(Long memberId);
+    void delete(Long memberId);
 
     MemberResponse update(Long memberId, MemberUpdateRequest req);
 }
