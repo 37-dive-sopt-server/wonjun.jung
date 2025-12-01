@@ -13,7 +13,7 @@ public record ArticleResponse(
         String content,
         Tag tag,
         LocalDateTime createdAt,
-        List<Comment> comment
+        List<Comment> comments
 ) {
     public record Author(Long memberId, String name) {}
 
