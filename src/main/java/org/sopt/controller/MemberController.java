@@ -6,7 +6,6 @@ import org.sopt.dto.request.MemberCreateRequest;
 import org.sopt.dto.request.MemberUpdateRequest;
 import org.sopt.dto.response.MemberResponse;
 import org.sopt.service.MemberService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +50,7 @@ public class MemberController {
     }
 
     // 회원정보 수정
-    @PutMapping("/{memberId}")
+    @PatchMapping("/{memberId}")
     public ResponseEntity<ApiResponse<MemberResponse>> updateMember(
             @PathVariable Long memberId,
             @Valid @RequestBody MemberUpdateRequest req) {

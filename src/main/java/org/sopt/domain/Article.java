@@ -40,7 +40,7 @@ public class Article {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy="comment", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy="article", cascade=CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
     private Article(Member member, String title, String content, Tag tag) {

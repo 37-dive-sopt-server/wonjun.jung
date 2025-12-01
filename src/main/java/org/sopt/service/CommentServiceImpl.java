@@ -22,13 +22,17 @@ public class CommentServiceImpl implements CommentService {
     private final MemberRepository memberRepository;
     private final ArticleRepository articleRepository;
 
+
+    // 댓글 생성
     @Transactional
     public Long create(Long articleId, Long memberId, String content) {
         Article article = articleRepository.findById(articleId).orElseThrow(
-                () -> new BusinessException(ErrorCode.ARTICLE_NOT_FOUND));
+                () -> new BusinessException(ErrorCode.ARTICLE_NOT_FOUND)
+        );
 
         Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+                () -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND)
+        );
 
         Comment comment = Comment.of(article, member, content);
 
@@ -37,14 +41,32 @@ public class CommentServiceImpl implements CommentService {
         return comment.getId();
     }
 
+    // 댓글 조회
     public CommentResponse findById(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND)
+        );
 
+        return CommentResponse.from(comment);
     }
-
+    
+    // 댓글 삭제
+    @Transactional
     public void delete(Long commentId) {
-
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND)
+        );
+        commentRepository.delete(comment);
     }
+    
+    // 댓글 수정
+    @Transactional
+    public CommentResponse update(Long commentId, String content) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND)
+        );
+        comment.update(content);
 
-    public void update(Long commentId, String content) {
+        return CommentResponse.from(comment);
     }
 }

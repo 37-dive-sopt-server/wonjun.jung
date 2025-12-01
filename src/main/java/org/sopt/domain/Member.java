@@ -33,8 +33,7 @@ public class Member {
     @OneToMany(mappedBy="member", cascade=CascadeType.ALL)
     private List<Article> articles = new ArrayList<>();
 
-    // private 생성자 (외부에서 직접 생성 방지)
-    private Member(String name, LocalDate birthDate, String email, Sex sex) {
+    public void update(String name, LocalDate birthDate, String email, Sex sex) {
         this.name = name;
         this.birthDate = birthDate;
         this.email = email;
@@ -42,6 +41,11 @@ public class Member {
     }
 
     public static Member of(String name, LocalDate birthDate, String email, Sex sex) {
-        return new Member(name, birthDate, email, sex);
+        Member member = new Member();
+        member.name = name;
+        member.birthDate = birthDate;
+        member.email = email;
+        member.sex = sex;
+        return member;
     }
 }
