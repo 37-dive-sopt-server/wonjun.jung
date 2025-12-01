@@ -4,6 +4,7 @@ import org.sopt.domain.Article;
 import org.sopt.domain.Tag;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record ArticleResponse(
         Long id,
@@ -11,9 +12,12 @@ public record ArticleResponse(
         String title,
         String content,
         Tag tag,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        List<Comment> comment
 ) {
     public record Author(Long memberId, String name) {}
+
+    public record Comment(Long commentId, Long memberId, String comment) {}
 
     public static ArticleResponse from(Article article) {
         return new ArticleResponse(
@@ -25,7 +29,14 @@ public record ArticleResponse(
                 article.getTitle(),
                 article.getContent(),
                 article.getTag(),
-                article.getCreatedAt()
+                article.getCreatedAt(),
+                article.getComments().stream()
+                        .map(comment -> new Comment(
+                                comment.getId(),
+                                comment.getMember().getId(),
+                                comment.getContent()
+                        ))
+                        .toList()
         );
     }
 }

@@ -1,12 +1,17 @@
 package org.sopt.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = {
         @Index(name = "idx_member_name", columnList = "name")
 })
@@ -26,9 +31,7 @@ public class Member {
     private Sex sex;
 
     @OneToMany(mappedBy="member", cascade=CascadeType.ALL)
-    private List<Article> articles;
-
-    protected Member() {}
+    private List<Article> articles = new ArrayList<>();
 
     // private 생성자 (외부에서 직접 생성 방지)
     private Member(String name, LocalDate birthDate, String email, Sex sex) {
@@ -40,25 +43,5 @@ public class Member {
 
     public static Member of(String name, LocalDate birthDate, String email, Sex sex) {
         return new Member(name, birthDate, email, sex);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Sex getSex() {
-        return sex;
     }
 }

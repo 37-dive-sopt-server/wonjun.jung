@@ -1,5 +1,6 @@
 package org.sopt.service;
 
+import lombok.RequiredArgsConstructor;
 import org.sopt.common.ErrorCode;
 import org.sopt.domain.Member;
 import org.sopt.domain.Sex;
@@ -15,13 +16,10 @@ import java.time.Period;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
-
-    public MemberServiceImpl(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
     
     // 회원 추가
     @Transactional
