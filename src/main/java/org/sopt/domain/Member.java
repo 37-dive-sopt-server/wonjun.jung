@@ -1,12 +1,17 @@
 package org.sopt.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = {
         @Index(name = "idx_member_name", columnList = "name")
 })
@@ -16,22 +21,23 @@ public class Member {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private LocalDate birthDate;
 
+    @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
     @OneToMany(mappedBy="member", cascade=CascadeType.ALL)
-    private List<Article> articles;
+    private List<Article> articles = new ArrayList<>();
 
-    protected Member() {}
-
-    // private 생성자 (외부에서 직접 생성 방지)
-    private Member(String name, LocalDate birthDate, String email, Sex sex) {
+    public void update(String name, LocalDate birthDate, String email, Sex sex) {
         this.name = name;
         this.birthDate = birthDate;
         this.email = email;
@@ -39,26 +45,11 @@ public class Member {
     }
 
     public static Member of(String name, LocalDate birthDate, String email, Sex sex) {
-        return new Member(name, birthDate, email, sex);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Sex getSex() {
-        return sex;
+        Member member = new Member();
+        member.name = name;
+        member.birthDate = birthDate;
+        member.email = email;
+        member.sex = sex;
+        return member;
     }
 }

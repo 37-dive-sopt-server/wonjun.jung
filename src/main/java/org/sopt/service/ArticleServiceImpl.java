@@ -1,5 +1,6 @@
 package org.sopt.service;
 
+import lombok.RequiredArgsConstructor;
 import org.sopt.common.ErrorCode;
 import org.sopt.domain.Article;
 import org.sopt.domain.Member;
@@ -14,15 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
     private final MemberRepository memberRepository;
-
-    public ArticleServiceImpl(ArticleRepository articleRepository, MemberRepository memberRepository) {
-        this.articleRepository = articleRepository;
-        this.memberRepository = memberRepository;
-    }
 
     // 아티클 생성
     @Transactional
