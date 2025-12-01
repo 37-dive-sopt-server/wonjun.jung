@@ -34,7 +34,7 @@ public class Comment {
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(updatable = false, nullable = false)
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     public void update(String content) {

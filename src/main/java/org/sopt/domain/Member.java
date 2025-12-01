@@ -21,12 +21,16 @@ public class Member {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private LocalDate birthDate;
 
+    @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
